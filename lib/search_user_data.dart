@@ -20,6 +20,7 @@ class MySearchDelegate extends SearchDelegate {
           },
         ),
       ];
+
   @override
   Widget buildResult(BuildContext context) => Center(
         child: Text(
@@ -33,16 +34,16 @@ class MySearchDelegate extends SearchDelegate {
   @override
   Widget buildSuggestion(BuildContext context) {
     List<String> suggestion = [
-      'Harsh',
+      'Abishek',
       'Neel',
-      'Raj',
-      'Jash',
-      'DK',
+      'Krutik',
+      'Harsh',
     ];
+
     return ListView.builder(
       itemCount: suggestion.length,
       itemBuilder: (context, index) {
-        // final suggestion = sugge  [index];
+        // final suggestion = suggestion  [index];
         var suggestions;
         final suggestion = suggestions[index];
 

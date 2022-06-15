@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:demo_project/model/sqLite_model.dart';
 import 'package:demo_project/user_listController.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,12 @@ import 'user_model.dart';
 import 'package:dio/dio.dart';
 
 class UserListScreen extends StatefulWidget {
-  const UserListScreen({Key? key}) : super(key: key);
+  const UserListScreen({
+    Key? key,
+    required this.sqliteModel,
+  }) : super(key: key);
+
+  final SqliteModel sqliteModel;
 
   @override
   State<UserListScreen> createState() => _UserListScreenState();
@@ -35,7 +41,6 @@ class _UserListScreenState extends State<UserListScreen> {
                       userListScreenController.userlist[index].firstName ??
                       userListScreenController.userlist[index].lastName ??
                       userListScreenController.userlist[index].id ??
-                      // userListScreenController.userlist[index].updatedAt ??
                       ''),
                 )))),
       ),

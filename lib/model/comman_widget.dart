@@ -34,29 +34,3 @@ class CommonWidgetButton extends StatelessWidget {
     );
   }
 }
-
-// class CommonWidgetColumn extends StatelessWidget {
-//   CommonWidgetColumn({Key? key, required String text}) : super(key: key);
-//   String text;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     // return Column(
-    //   mainAxisAlignment: MainAxisAlignment.center,
-    //   children: const [
-    //     Padding(
-    //       padding: EdgeInsets.all(8.0),
-    //       child: Text(
-    //         'No Internet',
-    //         textScaleFactor: 2.0,
-    //       ),
-    //     ),
-    //     Text(
-    //       'Please Check Your Internet Connection!!',
-    //       textAlign: TextAlign.center,
-    //       textScaleFactor: 1.5,
-    //     ),
-    //   ],
-    // );
-//   }
-// }

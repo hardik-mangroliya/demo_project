@@ -1,19 +1,14 @@
-// import 'package:flutter/cupertino.dart';
-// import 'package:flutter/material.dart';
+import 'package:demo_project/api_service.dart';
+import 'package:demo_project/user_model.dart';
+import 'package:get/get.dart';
+import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
-// class SqfliteDisplayData extends StatefulWidget {
-//   const SqfliteDisplayData({Key? key}) : super(key: key);
-
-//   @override
-//   _SqfliteDisplayDataState createState() => _SqfliteDisplayDataState();
-// }
-
-// class _SqfliteDisplayDataState extends State<SqfliteDisplayData>{
-//   @override
-//   Widget build(BuildContext context){
-//     return const Scaffold(
-//       body:SafeArea(child: Text("Display Data")),
-//     );
-//   }
-// }
-
+class HomeScreenController extends GetxController {
+  RxList<User>? listOfUser = <User>[].obs;
+  RxBool isLoading = true.obs;
+  void getUserData() async {
+    isLoading.value = true;
+    listOfUser?.value = await ApiService.getUser();
+    isLoading.value = false;
+  }
+}

@@ -5,13 +5,13 @@ import 'package:demo_project/user_model.dart';
 import 'package:dio/dio.dart';
 
 class ApiService {
-  final Dio _dio = Dio();
+  static final Dio dio = Dio();
 
-  Future<List<User>> getUser() async {
+  static Future<List<User>> getUser() async {
     List<User> usersList;
     try {
       // print('User Data:');
-      Response userData = await _dio
+      Response userData = await dio
           .get("https://verified-mammal-79.hasura.app/api/rest/users/0");
       print('User Info: ${userData.data}');
       usersList = apiDataFromJson(jsonEncode(userData.data)).users ?? [];
