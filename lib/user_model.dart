@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final apiData = apiDataFromJson(jsonString);
-
 // ignore_for_file: prefer_if_null_operators
 
 import 'dart:convert';

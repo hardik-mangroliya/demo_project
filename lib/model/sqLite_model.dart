@@ -1,80 +1,101 @@
-// ignore_for_file: avoid_print, depend_on_referenced_packages, prefer_const_declarations, non_constant_identifier_names
+// // ignore_for_file: avoid_print, depend_on_referenced_packages, prefer_const_declarations, non_constant_identifier_names
 
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
+// import 'package:sqflite/sqflite.dart';
+// import 'package:path/path.dart';
 
-// ignore: prefer_const_declarations
-final String tableName = "todo";
-final String Column_id = "id";
-final String Column_firstName = "firstName";
-final String Column_lastName = "lastName";
-final String Column_email = "email";
+// // ignore: prefer_const_declarations
+// final String tableName = "todo";
+// final String Column_id = "id";
+// final String Column_firstName = "firstName";
+// final String Column_lastName = "lastName";
+// final String Column_email = "email";
 
-class SqliteModel {
-  final String firstName;
-  final String lastName;
-  final String email;
-  int id;
+// class SqliteModel {
+//   final String firstName;
+//   final String lastName;
+//   final String email;
+//   int id;
 
-  SqliteModel(
-    this.lastName,
-    this.email,
-    this.firstName,
-    this.id,
-  );
-  Map<String, dynamic> toMap() {
-    return {
-      "firstName": this.firstName,
-      "lastName": this.lastName,
-      "email": this.email,
-      "id": this.id
-    };
-    // return {"lastName": this.lastName};
-    // return {"email": this.email};
-    // return {"id": this.id};
-  }
-}
+//   SqliteModel({
+//     required this.lastName,
+//     required this.email,
+//     required this.firstName,
+//     required this.id,
+//   });
+//   Map<String, dynamic> toMap() {
+//     return {
+//       "firstName": firstName,
+//       "lastName": lastName,
+//       "email": email,
+//       "id": id,
+//     };
+//   }
+// }
 
-class ToDoHelper {
-  late Database db;
+// class ToDoHelper {
+//   late Database db;
 
-  ToDoHelper() {
-    intiDatabase();
-  }
+//   ToDoHelper() {
+//     intiDatabase();
+//   }
 
-  Future<void> intiDatabase() async {
-    db = await openDatabase(join(await getDatabasesPath(), "databse.db"),
-        onCreate: (db, version) {
-      return db.execute(
-          "CREATE TABLE $tableName($Column_id INTEGER PRIMARY KEY AUTOINCREMENT, $Column_firstName TEXT,$Column_lastName TEXT,$Column_email Text)");
-    }, version: 1);
-  }
+//   Future<void> intiDatabase() async {
+//     db = await openDatabase(join(await getDatabasesPath(), "databse.db"),
+//         onCreate: (db, version) {
+//       return db.execute(
+//           "CREATE TABLE $tableName($Column_id INTEGER PRIMARY KEY AUTOINCREMENT, $Column_firstName TEXT,$Column_lastName TEXT,$Column_email Text)");
+//     }, version: 1);
+//   }
 
-  Future<void> insertTask(SqliteModel task) async {
-    try {
-      db.insert(tableName, task.toMap(),
-          conflictAlgorithm: ConflictAlgorithm.replace);
-    } catch (_) {
-      print(_);
-    }
-  }
+//   Future<void> insertTask(SqliteModel task) async {
+//     try {
+//       db.insert(tableName, task.toMap(),
+//           conflictAlgorithm: ConflictAlgorithm.replace);
+//     } catch (_) {
+//       print(_);
+//     }
+//   }
 
-  Future<List<SqliteModel>> getAllTask() async {
-    final List<Map<String, dynamic>> tasks = await db.query(tableName);
+//   Future<List<SqliteModel>> getAllTask() async {
+//     final List<Map<String, dynamic>> tasks = await db.query(tableName);
 
-    List<SqliteModel> myList = [];
+//     List<SqliteModel> myList = [];
 
-    if (tasks.isNotEmpty) {
-      myList = List.generate(tasks.length, (i) {
-        var id = "id";
-        // return SqliteModel("lastName", "email", "firstName",[id]);
-        return SqliteModel("lastName", "email", "firstName", 'id');
-      });
-    }
+//     if (tasks.isNotEmpty) {
+//       myList = List.generate(tasks.length, (i) {
+//         var id = "id";
+//         // return SqliteModel("lastName", "email", "firstName",[id]);
+//         return SqliteModel(
+//             lastName: "lastName",
+//             email: 'email',
+//             firstName: "firstName",
+//             id: 1);
+//       });
+//     }
+//     return myList;
+//   }
 
-    return myList;
-  }
-}
+//   Future<void> updateList(SqliteModel model) async {
+//     try {
+//       await db.update(tableName, model.toMap(),
+//           conflictAlgorithm: ConflictAlgorithm.replace);
+//     } catch (_) {
+//       print(_);
+//     }
+//   }
+
+//   Future<void> deleteList(SqliteModel model) async {
+//     try {
+//       await db.delete(tableName, model.toMap(),
+//           conflictAlgorithm: ConflictAlgorithm.replace);
+//     } catch (_) {
+//       print(_);
+//     }
+//   }
+// }
+
+
+
 
 
 

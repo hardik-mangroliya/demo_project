@@ -1,8 +1,13 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, deprecated_member_use
 
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:demo_project/model/comman_widget.dart';
 import 'package:demo_project/search_screen.dart';
 import 'package:demo_project/user_listScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'detail_screen.dart';
 import 'drawer_list_tile.dart';
 import 'favourite_screen.dart';
@@ -17,14 +22,106 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  ConnectivityResult _connectivityResult = ConnectivityResult.none;
+  final Connectivity _connectivity = Connectivity();
+  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    initConnectivity();
+
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription.cancel();
+    super.dispose();
+  }
+
+  Future<void> initConnectivity() async {
+    late ConnectivityResult result;
+    try {
+      result = await _connectivity.checkConnectivity();
+    } on PlatformException catch (e) {
+      var developer;
+      developer.log('Couldn\'t check connectivity status', error: e);
+      return;
+    }
+    if (!mounted) {
+      return Future.value(null);
+    }
+    return _updateConnectionStatus(result);
+  }
+
+  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
+    setState(() {
+      _connectivityResult = result;
+      if (ConnectivityResult.none == result) {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return Dialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0)),
+                elevation: 100,
+                child: ListView(shrinkWrap: true, children: <Widget>[
+                  const SizedBox(height: 30),
+                  const Icon(
+                      Icons
+                          .signal_wifi_statusbar_connected_no_internet_4_rounded,
+                      size: 40),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          'No Internet',
+                          textScaleFactor: 2.0,
+                        ),
+                      ),
+                      Text(
+                        'Please Check Your Internet Connection!!',
+                        textAlign: TextAlign.center,
+                        textScaleFactor: 1.5,
+                      ),
+                    ],
+                  ),
+                  // Column(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   crossAxisAlignment: CrossAxisAlignment.center,
+                  //   children: const [
+                  //     CommonWidgetColumn(text: "No Internet"),
+                  //     CommonWidgetColumn(
+                  //         text: "Please Check Your Internet Cnnection")
+                  //   ],
+                  // ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      CommonWidgetButton(text: "OK", color: Colors.blue),
+                      CommonWidgetButton(text: "RETRY", color: Colors.blue),
+                    ],
+                  ),
+                ]),
+              );
+            });
+        // );
+      }
+    });
+    //   });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text(
-            // 'Second Project',
-            'Tap Here For Search =>'),
+        title: const Text('Tap Here For Search =>'),
         actions: [
           IconButton(
               icon: const Icon(Icons.search),
@@ -35,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               })
         ],
-        backgroundColor: const Color.fromARGB(255, 27, 131, 173),
+        backgroundColor: Color.fromARGB(255, 5, 77, 105),
       ),
       drawer: Drawer(
         child: Column(
@@ -89,22 +186,12 @@ class _HomeScreenState extends State<HomeScreen> {
               index: 2,
               icon: const Icon(Icons.star_border),
               onTap: () {
-                // print("2");
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const FavouriteScreen(),
                     ));
               },
-            ),
-          ],
-        ),
-      ),
-      body: Center(
-        child: Column(
-          children: const [
-            SizedBox(
-              height: 5,
             ),
           ],
         ),
