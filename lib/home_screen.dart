@@ -12,6 +12,7 @@ import 'package:get/get.dart';
 import 'drawer_list_tile.dart';
 import 'favourite_screen.dart';
 import 'model/sqLite_model.dart';
+import 'model/user_list_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key, required this.title}) : super(key: key);
@@ -132,6 +133,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
           backgroundColor: Colors.white,
         ),
+        floatingActionButton: FloatingActionButton(onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => UserlistScreen()));
+        }),
         drawer: Drawer(
           child: Column(
             children: <Widget>[
