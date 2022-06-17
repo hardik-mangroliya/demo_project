@@ -9,32 +9,35 @@ import 'package:flutter/material.dart';
 class UserlistScreen extends StatefulWidget {
   const UserlistScreen({
     Key? key,
+    required this.user,
   }) : super(key: key);
+  final User user;
+
   @override
   State<UserlistScreen> createState() => _UserlistScreenState();
-  // _userlistScreenState createState()=> _userlistScreenState
 }
 
 class _UserlistScreenState extends State<UserlistScreen> {
-  late final User user;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: Icon(Icons.arrow_back_ios, color: Colors.black)),
         elevation: 0,
-        // iconTheme: const IconTheme(color: Colors.amber),
         actions: [
           IconButton(
             icon: const Icon(
-              Icons.star_border,
+              Icons.star,
               color: Colors.amber,
               size: 30,
             ),
             onPressed: () {},
           ),
         ],
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.white,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,34 +57,28 @@ class _UserlistScreenState extends State<UserlistScreen> {
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Padding(
                     padding: EdgeInsets.only(left: 30.0),
-                    child: Text("First Name"),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 30.0),
-                    child: Text(
-                      "Dev",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    // child: Text("First Name"),
+                    child: UserCommanWidget(
+                      title: "First Name",
+                      value: widget.user.firstName ?? "",
                     ),
-                  )
+                  ),
                 ],
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Padding(
                     padding: EdgeInsets.only(left: 90.0),
-                    child: Text("Last Name"),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 90.0),
-                    child: Text(
-                      "Patel",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    // child: Text("Last Name"),
+                    child: UserCommanWidget(
+                      title: "Last Name",
+                      value: widget.user.lastName ?? "",
                     ),
-                  )
+                  ),
                 ],
               )
             ],
@@ -94,35 +91,50 @@ class _UserlistScreenState extends State<UserlistScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 30.0),
-                  child: Text("Email"),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 30.0),
-                  child: Text(
-                    "Devpatel123@gmail.com",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
+                    padding: EdgeInsets.only(left: 30.0),
+                    // child: Text("Email"),
+                    child: UserCommanWidget(
+                      title: "Email",
+                      value: widget.user.email ?? "",
+                    )),
               ],
             ),
           ),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(25.0),
+          Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: Card(
               child: TextFormField(
                 decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black)),
                     labelText: "Bio",
-                    // fillColor: Colors.white,
+                    // labelStyle: "",
+                    fillColor: Colors.black,
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(9.0),
+                        borderRadius: BorderRadius.circular(5.0),
                         borderSide: BorderSide())),
+              ),
+            ),
+          ),
+          Spacer(),
+          Padding(
+            padding: const EdgeInsets.only(left: 30.0, right: 30, bottom: 14),
+            child: Container(
+              width: double.infinity,
+              height: 50,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10), color: Colors.black),
+              child: Center(
+                child: Text(
+                  "Save",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
           ),
         ],
       ),
-      backgroundColor: Colors.pink,
+      backgroundColor: Colors.white,
     );
   }
 }

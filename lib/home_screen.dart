@@ -24,7 +24,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final dbhelper = ToDoHelper();
+  final dbhelper = DatabaseHelper();
   ConnectivityResult _connectivityResult = ConnectivityResult.none;
   final Connectivity _connectivity = Connectivity();
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
@@ -133,18 +133,13 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
           backgroundColor: Colors.white,
         ),
-        floatingActionButton: FloatingActionButton(onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => UserlistScreen()));
-        }),
         drawer: Drawer(
+          backgroundColor: Colors.white,
           child: Column(
             children: <Widget>[
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                // color: Theme.of(context).primaryColor,
-                color: Colors.white,
+                padding: const EdgeInsets.all(50),
                 child: Center(
                     child: Column(
                   children: <Widget>[
@@ -153,7 +148,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 100,
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
-                        // image: DecorationImage(
                         image: DecorationImage(
                             image: NetworkImage(
                               "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6mU5mYYp5c00nAGXH3FPRlpSV2xXB9_P5gw&usqp=CAU",
@@ -179,7 +173,10 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               DrawerListTile(
                 title: "Favorite",
-                icon: const Icon(Icons.star_border),
+                icon: const Icon(
+                  Icons.star,
+                  color: Colors.amber,
+                ),
                 onTap: () {
                   Navigator.push(
                       context,
@@ -201,44 +198,91 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         body: Obx(
-          () => ListView.separated(
-            itemBuilder: (context, index) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    height: 90,
-                    decoration: BoxDecoration(color: Colors.grey[200]),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ListTile(
-                        title: Text(
-                          (homeScreenController.listOfUser![index].firstName ??
-                                  '') +
-                              ' ' +
-                              (homeScreenController
-                                      .listOfUser![index].lastName ??
-                                  ''),
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Text(
-                            homeScreenController.listOfUser![index].email ??
-                                ""),
-                        trailing: const Icon(Icons.star_border_outlined),
-                        leading: const CircleAvatar(
-                            backgroundImage: NetworkImage(
-                                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6mU5mYYp5c00nAGXH3FPRlpSV2xXB9_P5gw&usqp=CAU")),
-                      ),
+          () => homeScreenController.isLoading.value
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : homeScreenController.listOfUser!.isEmpty
+                  ? const Center(
+                      child: Text("No Data Found"),
+                    )
+                  : ListView.separated(
+                      itemCount: homeScreenController.listOfUser!.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              height: 90,
+                              decoration:
+                                  BoxDecoration(color: Colors.grey[200]),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 8, right: 8),
+                                child: ListTile(
+                                  trailing: Padding(
+                                    padding: EdgeInsets.only(left: 8, right: 8),
+                                    child: Builder(builder: (context) {
+                                      bool isFav = false;
+                                      return StatefulBuilder(
+                                          builder: (context, setState) {
+                                        return InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              isFav = !isFav;
+                                            });
+                                          },
+                                          child: Icon(
+                                            Icons.star,
+                                            color: isFav
+                                                ? Colors.amber
+                                                : Colors.grey,
+                                          ),
+                                        );
+                                      });
+                                    }),
+                                  ),
+                                  leading: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  UserlistScreen(
+                                                    user: homeScreenController
+                                                        .listOfUser![index],
+                                                  )));
+                                    },
+                                    child: const CircleAvatar(
+                                      radius: 25,
+                                      backgroundImage: NetworkImage(
+                                          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6mU5mYYp5c00nAGXH3FPRlpSV2xXB9_P5gw&usqp=CAU"),
+                                    ),
+                                  ),
+                                  title: Text(
+                                    (homeScreenController
+                                                .listOfUser![index].firstName ??
+                                            '') +
+                                        ' ' +
+                                        (homeScreenController
+                                                .listOfUser![index].lastName ??
+                                            ''),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  subtitle: Text(homeScreenController
+                                          .listOfUser![index].email ??
+                                      ""),
+                                ),
+                              ),
+                            )
+                          ],
+                        );
+                      },
+                      separatorBuilder: (BuildContext context, int index) {
+                        return const Divider();
+                      },
                     ),
-                  )
-                ],
-              );
-            },
-            separatorBuilder: (BuildContext context, int index) {
-              return const Divider();
-            },
-            itemCount: homeScreenController.listOfUser?.length ?? 0,
-          ),
         ));
   }
 }

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:demo_project/model/sqLite_model.dart';
-import 'package:demo_project/user_listController.dart';
+import 'package:demo_project/home_screenController.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,18 +11,19 @@ import 'package:dio/dio.dart';
 class UserListScreen extends StatefulWidget {
   const UserListScreen({
     Key? key,
-    required this.sqliteModel,
+    required this.user,
   }) : super(key: key);
 
-  final SqliteModel sqliteModel;
+  // final SqliteModel sqliteModel;
+  final User user;
 
   @override
   State<UserListScreen> createState() => _UserListScreenState();
 }
 
 class _UserListScreenState extends State<UserListScreen> {
-  UserListScreenController userListScreenController =
-      Get.put(UserListScreenController());
+  HomeScreenController userListScreenController =
+      Get.put(HomeScreenController());
 
   @override
   void initState() {

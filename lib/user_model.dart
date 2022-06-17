@@ -35,19 +35,23 @@ class User {
     this.id,
     this.lastName,
     this.updatedAt,
+    this.bio,
+    this.favourite,
   });
 
-  DateTime? createdAt;
+  String? createdAt;
   String? email;
   String? firstName;
   String? id;
   String? lastName;
-  DateTime? updatedAt;
+  String? updatedAt;
+  String? bio;
+  String? favourite;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-        createdAt: json["created_at"] == null
+        createdAt: json["created_at"toString()] == null
             ? null
-            : DateTime.parse(json["created_at"]),
+            : (json["created_at"toString()],
         email: json["email"] == null ? null : json["email"],
         firstName: json["first_name"] == null ? null : json["first_name"],
         id: json["id"] == null ? null : json["id"],
@@ -55,7 +59,11 @@ class User {
         updatedAt: json["updated_at"] == null
             ? null
             : DateTime.parse(json["updated_at"]),
+        bio: null,
+        favourite: null,
       );
+
+  get bio => null;
 
   Map<String, dynamic> toJson() => {
         "created_at": createdAt == null ? null : createdAt!.toIso8601String(),
