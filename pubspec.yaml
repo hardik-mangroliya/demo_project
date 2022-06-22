@@ -41,6 +41,7 @@ dependencies:
   path_provider: ^2.0.10
   connectivity_plus: ^2.3.2
   get_it: ^7.2.0
+  english_words: ^4.0.0
 
 dev_dependencies:
   flutter_test:

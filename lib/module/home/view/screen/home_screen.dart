@@ -1,23 +1,19 @@
 // ignore_for_file: avoid_print, deprecated_member_use, prefer_interpolation_to_compose_strings
 
 import 'dart:async';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:demo_project/model/comman_widget.dart';
-import 'package:demo_project/model/showData_fromSqlite.dart';
-import 'package:demo_project/search_user_data.dart';
+import 'package:demo_project/module/home/view/widget/comman_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'drawer_list_tile.dart';
+import '../../controller/home_screenController.dart';
+import '../../model/drawer_list_tile.dart';
 import 'favourite_screen.dart';
-import 'model/sqLite_model.dart';
-import 'model/user_list_screen.dart';
+import '../../../../core/dbHelper.dart';
+import 'user_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -35,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     initConnectivity();
-    homeScreenController.getUserData();
+    homeScreenController.getUserFromAPI();
 
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
@@ -77,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 30),
                   const Icon(
                       Icons
-                          .signal_wifi_statusbar_connected_no_internet_4_rounded,
+                          .wifi_off_sharp,color: Colors.blue,
                       size: 40),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -115,22 +111,37 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          toolbarHeight: 70,
+          elevation: 0,
           iconTheme: const IconThemeData(color: Colors.black),
           centerTitle: true,
-          actions: [
-            IconButton(
-                icon: const Icon(
-                  Icons.search,
-                  color: Colors.black,
-                  size: 35,
+          title: Padding(
+            padding: const EdgeInsets.only(bottom:2.0),
+            child: Container(
+              decoration: BoxDecoration(
+              color: Colors.white,
+                boxShadow: [BoxShadow(blurRadius: 9,spreadRadius: 0.5,color: Colors.black),],
+                borderRadius: BorderRadius.circular(22)
+              ),
+              child:  Padding(
+                padding: const EdgeInsets.fromLTRB(10,0,5,0),
+                child: TextField(
+                  cursorColor: Colors.black,
+                  onChanged: (value) {
+                    homeScreenController.SearchUser(value);
+                  },
+                  decoration: const InputDecoration(
+                    suffixIcon: Icon(Icons.search,color: Colors.black,),
+                    hintText: "Search",
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    
+                  ),
+
                 ),
-                onPressed: () {
-                  showSearch(
-                    context: context,
-                    delegate: MySearchDelegate(),
-                  );
-                })
-          ],
+              ),
+            ),
+          ),
           backgroundColor: Colors.white,
         ),
         drawer: Drawer(
@@ -162,13 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 title: 'Home',
                 icon: const Icon(Icons.home),
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const HomeScreen(
-                          title: 'HomeScreen',
-                        ),
-                      ));
+                  Navigator.pop(context);
                 },
               ),
               DrawerListTile(
@@ -186,13 +191,40 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
               const Spacer(),
-              const Padding(
+               Padding(
                 padding: EdgeInsets.only(bottom: 40),
-                child: Text("Clear data",
-                    style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.red,
-                        decoration: TextDecoration.underline)),
+                child: InkWell(
+                  onTap: () async {
+                    await showDialog(
+                      context: context, 
+                      builder: (ctx)=>AlertDialog(
+                        title: Text("Alert Box"),
+                        // content: Text("If You Want To Clear All Data Permently???"),
+                        content: Text("Are you sure,You want to clear all data!!"),
+                        actions: [
+                          ElevatedButton(onPressed: (){
+                            Navigator.pop(context);
+                          }, child: Text("Cancel"),),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ElevatedButton(
+                              onPressed: (){
+                              dbhelper.delete();
+                              homeScreenController.userlist.clear();
+                              Navigator.pop(context);
+                              setState(() {});
+                            }, 
+                              child: const Text("Okay",style: TextStyle(color: Colors.white),)),
+                          ),
+                        ],
+                        ));
+                  },
+                  child: const Text("Clear data",
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.red,
+                          decoration: TextDecoration.underline)),
+                ),
               ),
             ],
           ),
@@ -202,13 +234,14 @@ class _HomeScreenState extends State<HomeScreen> {
               ? const Center(
                   child: CircularProgressIndicator(),
                 )
-              : homeScreenController.listOfUser!.isEmpty
+              : homeScreenController.userlist.isEmpty
                   ? const Center(
                       child: Text("No Data Found"),
                     )
                   : ListView.separated(
-                      itemCount: homeScreenController.listOfUser!.length,
+                      itemCount: homeScreenController.userlist.length,
                       itemBuilder: (context, index) {
+                        final isFav = homeScreenController.userlist[index].favourite==0;
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -223,20 +256,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                   trailing: Padding(
                                     padding: EdgeInsets.only(left: 8, right: 8),
                                     child: Builder(builder: (context) {
-                                      bool isFav = false;
                                       return StatefulBuilder(
                                           builder: (context, setState) {
                                         return InkWell(
-                                          onTap: () {
-                                            setState(() {
-                                              isFav = !isFav;
-                                            });
-                                          },
                                           child: Icon(
                                             Icons.star,
-                                            color: isFav
-                                                ? Colors.amber
-                                                : Colors.grey,
+                                            color: isFav ? Colors.amber : Colors.grey
                                           ),
                                         );
                                       });
@@ -250,7 +275,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               builder: (context) =>
                                                   UserlistScreen(
                                                     user: homeScreenController
-                                                        .listOfUser![index],
+                                                        .userlist[index],
                                                   )));
                                     },
                                     child: const CircleAvatar(
@@ -261,17 +286,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   title: Text(
                                     (homeScreenController
-                                                .listOfUser![index].firstName ??
+                                                .userlist[index].firstName ??
                                             '') +
                                         ' ' +
                                         (homeScreenController
-                                                .listOfUser![index].lastName ??
+                                                .userlist[index].lastName ??
                                             ''),
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold),
                                   ),
                                   subtitle: Text(homeScreenController
-                                          .listOfUser![index].email ??
+                                          .userlist[index].email ??
                                       ""),
                                 ),
                               ),
