@@ -14,7 +14,7 @@ class ApiService {
     try {
       // print('User Data:');
       Response userData = await dio
-          .get("https://verified-mammal-79.hasura.app/api/rest/users/0");
+          .get("https://verified-mammal-79.hasura.app/api/rest/users/47");
       print('User Info: ${userData.data}');
       usersList = welcomeFromJson(jsonEncode(userData.data)).users ?? [];
       await dbhelper.insertAllUserToDB(usersList);
