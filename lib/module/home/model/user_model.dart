@@ -39,8 +39,8 @@ class User {
         firstName: json["first_name"],
         lastName: json["last_name"],
         updatedAt: json["updated_at"].toString(),
-        bio: json["bio"],
-        favourite: json["favourite"],
+        bio: json["Bio"],
+        favourite: json["Favourite"],
       );
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -49,8 +49,8 @@ class User {
         "first_name": firstName,
         "last_name": lastName,
         "updated_at": updatedAt,
-        "bio": bio,
-        "favourite": favourite,
+        "Bio": bio,
+        "Favourite": favourite,
       };
 }
 

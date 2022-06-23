@@ -2,7 +2,6 @@ import 'package:demo_project/core/api_service.dart';
 import 'package:demo_project/core/dbHelper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-
 import '../model/user_model.dart';
 
 class HomeScreenController extends GetxController {
@@ -19,7 +18,6 @@ class HomeScreenController extends GetxController {
       userlist.value = await dbhelper.getAllRecordFromDB();
     }
         isLoading.value = false;
-
   }
 
   Future<void> SearchUser(String value) async{

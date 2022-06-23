@@ -104,7 +104,8 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             });
       }
-    });
+    }
+    );
   }
 
   @override
@@ -271,7 +272,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                     subtitle: Text(homeScreenController
                                             .userlist[index].email ??
-                                        ""),
+                                        "",
+                                        maxLines: 1,),
                                     trailing: Padding(
                                       padding: EdgeInsets.only(left: 8, right: 8),
                                       child: Builder(builder: (context) {

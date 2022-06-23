@@ -48,7 +48,7 @@ class DatabaseHelper {
       Map<String, dynamic> userdata = {
         DatabaseHelper.columnId: userlist[i].id,
         DatabaseHelper.columnfirstName: userlist[i].firstName,
-        DatabaseHelper.columnlastName:userlist[i].lastName,
+        DatabaseHelper.columnlastName: userlist[i].lastName,
         DatabaseHelper.columnemail: userlist[i].email,
         DatabaseHelper.columnupdateAt: userlist[i].updatedAt.toString(),
         DatabaseHelper.columncreateAt: userlist[i].createdAt.toString(),
@@ -60,22 +60,44 @@ class DatabaseHelper {
 
   Future update(User usermodel) async {
     final db = await database;
-    return await db!.update(tablename, {columnBio: usermodel.bio,columnFavourite: usermodel.favourite},
+    return await db!.update(tablename,
+        {columnBio: usermodel.bio, columnFavourite: usermodel.favourite},
         where: "$columnId=?", whereArgs: [usermodel.id]);
   }
 
-  Future<List<User>> search(String value) async{
+  Future<List<User>> search(String value) async {
     final db = await database;
-    var result = await db!.rawQuery(" SELECT * FROM $tablename WHERE $columnfirstName LIKE '%$value%' OR $columnlastName LIKE '%$value%'");
-    List<User> list = result.isNotEmpty? result.map((e) => User.fromJson(e)).toList(): [];
+    var result = await db!.rawQuery(
+        " SELECT * FROM $tablename WHERE $columnfirstName LIKE '%$value%' OR $columnlastName LIKE '%$value%'");
+    List<User> list =
+        result.isNotEmpty ? result.map((e) => User.fromJson(e)).toList() : [];
     return list;
   }
-
 
   Future delete() async {
     final db = await database;
     return await db!.delete(tablename);
   }
+
+  Future<List<User>> favourite() async {
+    final db = await database;
+    var listofFav = await db!.rawQuery("SELECT * FROM $tablename WHERE $columnFavourite LIKE 0");
+    List<User> list=listofFav.isNotEmpty ? listofFav.map((e) => User.fromJson(e)).toList() : [];
+    return list;
+  }
+
+  // Future<List<User>> favourite() async {
+  //   final db = await database;
+  //   var templist = await db!
+  //       .rawQuery("""SELECT * FROM $tablename WHERE $columnFavourite LIKE '0'""");
+  //   List<User> list = templist.isNotEmpty
+  //       ? templist.map((e) => User.fromJson(e)).toList()
+  //       : [];
+  //   return list;
+  // }
+
+
+
 
   Future<List<User>> getAllRecordFromDB() async {
     final db = await database;
@@ -95,9 +117,4 @@ class DatabaseHelper {
     print(tempList);
     return tempList;
   }
-} 
-
-
-
-
-               
+}

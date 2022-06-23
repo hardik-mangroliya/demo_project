@@ -19,8 +19,6 @@ class UserlistScreen extends StatefulWidget {
 
   @override
   State<UserlistScreen> createState() => _UserlistScreenState();
-
-
 }
 
   TextEditingController biocontroller = TextEditingController();
@@ -44,24 +42,25 @@ class _UserlistScreenState extends State<UserlistScreen> {
       resizeToAvoidBottomInset : false,
       appBar: AppBar(
         leading: IconButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: ()async {
+              Navigator.pop(context);
+            },
             icon: Icon(Icons.arrow_back_ios, color: Colors.black)),
         elevation: 0,
         actions: [
           IconButton(
-            icon: InkWell(
-              onTap: () {
+            icon: Icon(
+              Icons.star,
+              color: isFav ? Colors.amber:Colors.grey, 
+              size: 30,
+            ),
+            onPressed: () async{
                 setState(() {
                   isFav = !isFav;
                 });
-              },
-              child:  Icon(
-                Icons.star,
-                color: isFav ? Colors.amber:Colors.grey, 
-                size: 30,
-              ),
-            ),
-            onPressed: () {},
+                await textFieldController.insertdata(bio: biocontroller.text,id: widget.user.id.toString(), favourite: isFav ? 0 : 1);
+              homeScreenController.getUserFromAPI();
+            }
           ),
         ],
         backgroundColor: Colors.white,
@@ -75,6 +74,8 @@ class _UserlistScreenState extends State<UserlistScreen> {
               child: Center(
                 child: CircleAvatar(
                   radius: 60,
+                  // child: Text('${firstName[0]} ${lastName[0]}'),
+
                   backgroundImage: NetworkImage(
                       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6mU5mYYp5c00nAGXH3FPRlpSV2xXB9_P5gw&usqp=CAU"),
                 ),
@@ -154,10 +155,10 @@ class _UserlistScreenState extends State<UserlistScreen> {
                 child: Center( 
                   child: InkWell(
                     onTap: () async{
+                        // await textFieldController.insertdata(bio: biocontroller.text,id: widget.user.id.toString());
                      await textFieldController.insertdata(bio: biocontroller.text,id: widget.user.id.toString(), favourite: isFav ? 0 : 1);
                      homeScreenController.getUserFromAPI();
                     Navigator.pop(context);
-      
                     },
                     child: Text(
                       "Save",
