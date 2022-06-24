@@ -5,6 +5,9 @@ import 'package:get/get.dart';
 import '../model/user_model.dart';
 
 class HomeScreenController extends GetxController {
+  
+  TextEditingController searchController =  TextEditingController();
+
   RxList<User> userlist = <User>[].obs;
   RxBool isLoading = true.obs;
 
