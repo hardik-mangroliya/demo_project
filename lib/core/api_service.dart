@@ -13,7 +13,7 @@ class ApiService {
     List<User> usersList;
     try {
       Response userData = await dio
-          .get("https://verified-mammal-79.hasura.app/api/rest/users/20");
+          .get("https://verified-mammal-79.hasura.app/api/rest/users/0");
       print('User Info: ${userData.data}');
       usersList = welcomeFromJson(jsonEncode(userData.data)).users ?? [];
       await dbhelper.insertAllUserToDB(usersList);
