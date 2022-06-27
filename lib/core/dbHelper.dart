@@ -64,6 +64,7 @@ class DatabaseHelper {
         {columnBio: usermodel.bio, columnFavourite: usermodel.favourite},
         where: "$columnId=?", whereArgs: [usermodel.id]);
   }
+  
 
   Future<List<User>> search(String value) async {
     final db = await database;
@@ -85,19 +86,6 @@ class DatabaseHelper {
     List<User> list=listofFav.isNotEmpty ? listofFav.map((e) => User.fromJson(e)).toList() : [];
     return list;
   }
-
-  // Future<List<User>> favourite() async {
-  //   final db = await database;
-  //   var templist = await db!
-  //       .rawQuery("""SELECT * FROM $tablename WHERE $columnFavourite LIKE '0'""");
-  //   List<User> list = templist.isNotEmpty
-  //       ? templist.map((e) => User.fromJson(e)).toList()
-  //       : [];
-  //   return list;
-  // }
-
-
-
 
   Future<List<User>> getAllRecordFromDB() async {
     final db = await database;

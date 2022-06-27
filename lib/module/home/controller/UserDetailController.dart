@@ -6,12 +6,9 @@ import '../model/user_model.dart';
 
 class UserDetailController extends GetxController{
     DatabaseHelper dbHelper = DatabaseHelper();
-  updateBioDetail({required String id,required String bio})async{
-   await dbHelper.update(User(bio: bio,id: id),);
-  }
-  
-  void updateFavouriteDetail({required User userData }) async{
-    await dbHelper.update(User(favourite: userData.favourite,id: userData.id));
+
+  Future<void> updateUserDetail({required User userData})async{
+    await dbHelper.update(User(favourite: userData.favourite,bio: userData.bio,id: userData.id));
   }
 }
 

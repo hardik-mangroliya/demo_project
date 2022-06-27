@@ -1,5 +1,6 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
+import 'package:demo_project/module/home/view/screen/favourite_screen.dart';
 import 'package:demo_project/module/home/view/widget/comman_widget.dart';
 import 'package:demo_project/module/home/view/widget/user_comman_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import '../../controller/home_screenController.dart';
-import '../../controller/text_field_controller.dart';
+import '../../controller/UserDetailController.dart';
 import '../../model/user_model.dart';
 
 class UserlistScreen extends StatefulWidget {
@@ -22,7 +23,7 @@ class UserlistScreen extends StatefulWidget {
 }
 
   TextEditingController biocontroller = TextEditingController();
-  TextFieldController textFieldController= Get.put(TextFieldController());
+  UserDetailController userDetailController= Get.put(UserDetailController());
   HomeScreenController homeScreenController= Get.find();
   
   bool isFav=false;
@@ -47,7 +48,7 @@ class _UserlistScreenState extends State<UserlistScreen> {
             },
             icon: Icon(Icons.arrow_back_ios, color: Colors.black)),
         elevation: 0,
-        actions: [
+        actions: [ 
           IconButton(
             icon: Icon(
               Icons.star,
@@ -58,7 +59,8 @@ class _UserlistScreenState extends State<UserlistScreen> {
                 setState(() {
                   isFav = !isFav;
                 });
-                await textFieldController.insertdata(bio: biocontroller.text,id: widget.user.id.toString(), favourite: isFav ? 0 : 1);
+                await userDetailController.updateUserDetail(userData: User(favourite: isFav ? 0:1,bio: widget.user.bio,id: widget.user.id));
+                
               homeScreenController.getUserFromAPI();
             }
           ),
@@ -75,7 +77,6 @@ class _UserlistScreenState extends State<UserlistScreen> {
                 child: CircleAvatar(
                   radius: 60,
                   // child: Text('${firstName[0]} ${lastName[0]}'),
-
                   backgroundImage: NetworkImage(
                       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6mU5mYYp5c00nAGXH3FPRlpSV2xXB9_P5gw&usqp=CAU"),
                 ),
@@ -155,10 +156,11 @@ class _UserlistScreenState extends State<UserlistScreen> {
                 child: Center( 
                   child: InkWell(
                     onTap: () async{
-                        // await textFieldController.insertdata(bio: biocontroller.text,id: widget.user.id.toString());
-                     await textFieldController.insertdata(bio: biocontroller.text,id: widget.user.id.toString(), favourite: isFav ? 0 : 1);
+
+                    await userDetailController.updateUserDetail(userData: User(favourite: isFav ? 0:1,bio: biocontroller.text,id: widget.user.id));
+
                      homeScreenController.getUserFromAPI();
-                    Navigator.pop(context);
+                    Navigator.pop(context, true);
                     },
                     child: Text(
                       "Save",
